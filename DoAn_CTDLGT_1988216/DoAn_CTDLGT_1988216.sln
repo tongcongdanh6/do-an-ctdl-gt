@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30503.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoAn_CTDLGT_1988216", "DoAn_CTDLGT_1988216\DoAn_CTDLGT_1988216.csproj", "{ABB64B66-29E7-4A27-A40C-8790B36E518B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABB64B66-29E7-4A27-A40C-8790B36E518B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABB64B66-29E7-4A27-A40C-8790B36E518B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABB64B66-29E7-4A27-A40C-8790B36E518B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABB64B66-29E7-4A27-A40C-8790B36E518B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {76F7760D-0F8D-4887-AD60-B5DBD7D68FFD}
+	EndGlobalSection
+EndGlobal
