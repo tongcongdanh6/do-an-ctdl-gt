@@ -49,6 +49,7 @@ namespace DoAn_CTDLGT_1988216
             {
                 Console.Write(x + " ");
             }
+            Console.WriteLine();
         }
     }
 }
