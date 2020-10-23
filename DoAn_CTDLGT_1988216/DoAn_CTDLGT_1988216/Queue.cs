@@ -17,13 +17,7 @@ namespace DoAn_CTDLGT_1988216
 
         public bool isQueueEmpty()
         {
-
             return list.Count == 0;
-        }
-
-        public int numOfNode()
-        {
-            return list.Count;
         }
 
         public void push(int x)
