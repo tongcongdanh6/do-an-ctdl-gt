@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace DoAn_CTDLGT_1988216
 {
@@ -17,48 +18,47 @@ namespace DoAn_CTDLGT_1988216
 
             while((ln = file.ReadLine()) != null)
             {
-                string[] strArr = ln.Split(' '); // Tách chuỗi để đưa vào array bởi space
+                // Tách chuỗi để đưa vào array bởi space, hoặc tab, và thêm option remove các duplicate space ...
+                string[] strArr = ln.Split((char[])null, StringSplitOptions.RemoveEmptyEntries); 
                 int numOfElement = strArr.Length;
 
                 for (int i = 0; i < numOfElement; i++)
                 {
-                    intList.Add(Convert.ToInt32(strArr[i], 16));
+                    // Kiểm tra việc phân tích từ Hex sang Decimal có thành công hay không
+                    // Có 2 trường hợp không thành công là
+                    // 1. Kí tự đặc biệt
+                    // 2. Cũng là kí tự nhưng nằm ngoài range [A-F] của Hex
+                    if(int.TryParse(strArr[i], NumberStyles.HexNumber, new CultureInfo("en-US") , out int res))
+                    {
+                        // Nếu Parse thành công thì add vào List
+                        intList.Add(Convert.ToInt32(strArr[i], 16));
+                    }
                 }
             }
             file.Close();
 
-            return intList.ToArray(); // Chuyển đổi từ List qua Array
+            // Chuyển đổi từ List qua Array
+            return intList.ToArray(); 
         }
 
 
-        static void writeHexNumbers(int[] intArr)
+        static void writeHexNumbers(int[] intArr, string pathFile)
         {
             string hexString = "";
 
             for(int i = 0; i < intArr.Length; i++)
             {
-                if(i < intArr.Length - 1)
-                {
-                    if(intArr[i] >= 0 && intArr[i] < 16)
-                    {
-                        hexString += "0" + intArr[i].ToString("X") + " ";
-                    }
-                    else
-                    {
-                        hexString += intArr[i].ToString("X") + " ";
-                    }
-                }
-                else
-                {
-                    hexString += intArr[i].ToString("X");
-                }
+                // Chuyển từ Dec sang Hex với 2 digit
+                hexString += intArr[i].ToString("X2") + " ";
             }
+
+            // Remove space cuối cùng
+            hexString = hexString.Remove(hexString.Length - 1);
            
-            StreamWriter file = new StreamWriter("../../sorted_numbers.txt");
+            StreamWriter file = new StreamWriter(pathFile);
+            // Ghi chuỗi ra file
             file.Write(hexString);
             file.Close();
-
-            
         }
 
         static int[] selectionSort(int[] intArr)
@@ -133,35 +133,23 @@ namespace DoAn_CTDLGT_1988216
             return evenQueue;
         }
 
-        static public void writeToFile(Queue myQueue, string fileName)
+        static public void writeToFile(Queue myQueue, string filePath)
         {
             string hexString = "";
-            int counter = myQueue.Count(); // Số lượng phần tử hiện có trong hàng đợi
+
+            // Số lượng phần tử hiện có trong hàng đợi
+            int counter = myQueue.Count(); 
 
             for (int i = 0; i < counter; i++)
             {
-                if (i < counter - 1)
-                {
-                    if (myQueue.getFromQueue(i) >= 0 && myQueue.getFromQueue(i) < 16)
-                    {
-                        hexString += "0" + myQueue.getFromQueue(i).ToString("X") + " ";
-                    }
-                    else
-                    {
-                        hexString += myQueue.getFromQueue(i).ToString("X") + " ";
-                    }
-                }
-                else
-                {
-                    hexString += myQueue.getFromQueue(i).ToString("X");
-                }
+                hexString += myQueue.getFromQueue(i).ToString("X2") + " ";
             }
 
-            StreamWriter file = new StreamWriter("../../"+ fileName+".txt");
+            hexString = hexString.Remove(hexString.Length - 1);
+
+            StreamWriter file = new StreamWriter(filePath);
             file.Write(hexString);
             file.Close();
-
-            Console.WriteLine("=> File " + fileName + ".txt da duoc ghi!!!");
         }
 
         static void printIntArray(int[] arr)
@@ -172,132 +160,75 @@ namespace DoAn_CTDLGT_1988216
             }
         }
 
-        static void showMenu()
-        {
-            Console.WriteLine("****************************************************************");
-            Console.WriteLine("**           DO AN - CAU TRUC DU LIEU VA GIAI THUAT           **");
-            Console.WriteLine("****************************************************************");
-            Console.WriteLine("**  1 - Doc mang so nguyen luu trong tap tin hex_numbers.txt  **");
-            Console.WriteLine("**  2 - Sap xep mang bang thuat toan Selection Sort           **");
-            Console.WriteLine("**  3 - Xuat mang da sap xep bang Selection Sort ra tap tin   **");
-            Console.WriteLine("**  4 - Tim kiem 1 so nguyen tren mang bang Binary Search     **");
-            Console.WriteLine("**  5 - Xuat hang doi (Queue) CHAN va LE ra tap tin           **");
-            Console.WriteLine("**  0 - THOAT CHUONG TRINH                                    **");
-            Console.WriteLine("****************************************************************");
-        }
-
         static void Main(string[] args)
         {
 
-            int modeSelection;
-            string x;
-            bool flag = true;
-            showMenu();
+            const string INPUT_FILE_PATH = "../../hex_numbers.txt";
+            const string SORTED_FILE_PATH = "../../sorted_numbers.txt";
+            const string EVEN_QUEUE_FILE_PATH = "../../even_queue.txt";
+            const string ODD_QUEUE_FILE_PATH = "../../odd_queue.txt";
 
-            while (flag)
+            // Setup doc file tu hex_numbers.txt
+            int[] myArr = readHexNumbers(INPUT_FILE_PATH);
+
+            // Setup cho Selection Sort
+            int[] sortedArr = selectionSort(myArr);
+            writeHexNumbers(sortedArr, SORTED_FILE_PATH);
+
+            // Setup cho Binary Search
+            // Validate truong hop nhap khong phai la so bang TryParse
+            if(args.Length == 0)
             {
-                Console.Write("\nVui long chon chuc nang theo menu o tren => ");
-                x = Console.ReadLine();
-                // Kiem tra xem nguoi dung nhap vao co phai la so hay khong?
-                while (!int.TryParse(x, out modeSelection))
+                if (int.TryParse(Console.ReadLine(), out int n))
                 {
-                    Console.Write("=> Mode phai la SO NGUYEN, vui long nhap lai => ");
-                    x = Console.ReadLine();
+                    int foundIdx = binarySearch(sortedArr, 0, sortedArr.Length - 1, n);
+                    if (foundIdx == -1)
+                    {
+                        Console.WriteLine("Khong tim thay {0}", n);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vi tri cua {0} la {1}", n, foundIdx);
+                    }
                 }
-
-                // Neu vuot qua duoc doan vong lap while o tren thi co nghia nguoi dung nhap dung la 1 so nguyen,
-                // va viec chon Mode se duoc thuc hien
-                switch (modeSelection)
+                else
                 {
-                    case 1:
-                        {
-                            int[] arrInt = readHexNumbers("../../hex_numbers.txt");
-                            Console.WriteLine("=> Cac phan tu so nguyen trong mang duoc doc tu file hex_numbers.txt");
-                            printIntArray(arrInt);
-                            Console.WriteLine();
-                        }
-                        break;
-                    case 2:
-                        {
-                            int[] arrInt = readHexNumbers("../../hex_numbers.txt");
-                            Console.WriteLine("=> Cac phan tu so nguyen trong mang TRUOC KHI duoc sap xep: ");
-                            printIntArray(arrInt);
-                            Console.WriteLine();
-
-                            int[] sortedArr = selectionSort(arrInt);
-                            Console.WriteLine("=> Cac phan tu trong mang SAU KHI sap xep bang Selection Short: ");
-                            printIntArray(sortedArr);
-                            Console.WriteLine();
-                        }
-                        break;
-                    case 3:
-                        {
-                            writeHexNumbers(selectionSort(readHexNumbers("../../hex_numbers.txt")));
-                            Console.Write("=> File sorted_numbers.txt da duoc ghi !!!");
-                            Console.WriteLine();
-                        }
-                        break;
-                    case 4:
-                        {
-                            Console.Write("=> Nhap vao gia tri x can tim = ");
-                            string key = Console.ReadLine();
-                            int intKey;
-
-                            while (!int.TryParse(key, out intKey))
-                            {
-                                Console.Write("=> So x can tim da nhap KHONG HOP LE!!! Nhap lai => ");
-                                key = Console.ReadLine();
-
-                            }
-
-                            int[] arrInt = readHexNumbers("../../hex_numbers.txt");
-                            int[] sortedArr = selectionSort(arrInt);
-                            int idx = binarySearch(sortedArr, 0, sortedArr.Length - 1, intKey);
-                            if (idx != -1)
-                            {
-                                Console.WriteLine("=> Vi tri cua phan tu x = " + intKey + " la " + idx);
-                            }
-                            else
-                            {
-                                Console.WriteLine("=> Khong tim thay x = " + intKey + " trong mang da cho");
-                            }
-                            Console.WriteLine();
-                        }
-                        break;
-                    case 5:
-                        {
-                            int[] arrInt = readHexNumbers("../../hex_numbers.txt");
-                            int[] sortedArr = selectionSort(arrInt);
-
-                            Queue oddQueue = getOdd(sortedArr);
-                            Queue evenQueue = getEven(sortedArr);
-
-                            Console.WriteLine("=> Hang doi (Queue) chua so LE bao gom:");
-                            oddQueue.printQueue();
-                            writeToFile(oddQueue, "odd_queue");
-                            Console.WriteLine();
-
-                            Console.WriteLine("=> Hang doi (Queue) chua so CHAN bao gom:");
-                            evenQueue.printQueue();
-                            writeToFile(evenQueue, "even_queue");
-                            Console.WriteLine();
-                        }
-                        break;
-                    case 0:
-                        flag = false;
-                        Console.Write("CHUONG TRINH DA KET THUC!!! Press any key to continue!");
-                        break;
-                    default:
-                        {
-                            Console.WriteLine("=> Ban chon Mode khong ton tai, vui long chon lai !!!");
-                            Console.WriteLine();
-                            showMenu();
-                        }
-                        break;
+                    Console.WriteLine("So da nhap khong hop le !!!");
                 }
-
             }
-            Console.ReadLine();
+            else
+            {
+                if (int.TryParse(args[0], out int n))
+                {
+                    int foundIdx = binarySearch(sortedArr, 0, sortedArr.Length - 1, n);
+                    if (foundIdx == -1)
+                    {
+                        Console.WriteLine("Khong tim thay {0}", n);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vi tri cua {0} la {1}", n, foundIdx);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("So da nhap khong hop le !!!");
+                }
+            }
+
+
+
+            // Setup cho Queue
+            Queue evenQueue = new Queue();
+            Queue oddQueue = new Queue();
+
+            evenQueue = getEven(sortedArr);
+            oddQueue = getOdd(sortedArr);
+
+            writeToFile(evenQueue, EVEN_QUEUE_FILE_PATH);
+            writeToFile(oddQueue, ODD_QUEUE_FILE_PATH);
+
+            Console.ReadKey(true);
         }
 
     }
