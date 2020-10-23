@@ -15,20 +15,15 @@ namespace DoAn_CTDLGT_1988216
             list = new LinkedList<int>();
         }
 
-        public void IsQueueFull()
+        public bool isQueueEmpty()
         {
 
-            Console.Write(list.Count);
+            return list.Count == 0;
         }
 
-        public int Count()
+        public int numOfNode()
         {
             return list.Count;
-        }
-
-        public int getFromQueue(int pos)
-        {
-            return list.ElementAt<int>(pos);
         }
 
         public void push(int x)
@@ -37,19 +32,12 @@ namespace DoAn_CTDLGT_1988216
             list.AddLast(x);
         }
 
-        public void pop()
+        public int pop()
         {
             // Lấy phần tử đầu hàng đợi
+            int removedElement = list.ElementAt<int>(0);
             list.RemoveFirst();
-        }
-
-        public void printQueue()
-        {
-            foreach(int x in list)
-            {
-                Console.Write(x + " ");
-            }
-            Console.WriteLine();
+            return removedElement;
         }
     }
 }

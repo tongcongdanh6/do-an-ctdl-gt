@@ -7,7 +7,7 @@ namespace DoAn_CTDLGT_1988216
 {
     class Program
     {
-        static int[] readHexNumbers(string FilePath)
+        static public int[] readHexNumbers(string FilePath)
         {
             StreamReader file = new StreamReader(FilePath);
             string ln;
@@ -38,27 +38,7 @@ namespace DoAn_CTDLGT_1988216
             return intList.ToArray(); 
         }
 
-
-        static void writeHexNumbers(int[] intArr, string pathFile)
-        {
-            string hexString = "";
-
-            for(int i = 0; i < intArr.Length; i++)
-            {
-                // Chuyển từ Dec sang Hex với 2 digit
-                hexString += intArr[i].ToString("X2") + " ";
-            }
-
-            // Remove space cuối cùng
-            hexString = hexString.Remove(hexString.Length - 1);
-           
-            StreamWriter file = new StreamWriter(pathFile);
-            // Ghi chuỗi ra file
-            file.Write(hexString);
-            file.Close();
-        }
-
-        static int[] selectionSort(int[] intArr)
+        static public int[] selectionSort(int[] intArr)
         {
             for(int i = 0; i < intArr.Length; i++)
             {
@@ -76,8 +56,26 @@ namespace DoAn_CTDLGT_1988216
                 intArr[i] = intArr[minIdx];
                 intArr[minIdx] = tmp;
             }
-
             return intArr;
+        }
+
+        static public void writeHexNumbers(int[] intArr, string pathFile)
+        {
+            string hexString = "";
+
+            for (int i = 0; i < intArr.Length; i++)
+            {
+                // Chuyển từ Dec sang Hex với 2 digit
+                hexString += intArr[i].ToString("X2") + " ";
+            }
+
+            // Remove space cuối cùng
+            hexString = hexString.Remove(hexString.Length - 1);
+
+            StreamWriter file = new StreamWriter(pathFile);
+            // Ghi chuỗi ra file
+            file.Write(hexString);
+            file.Close();
         }
 
         static public int binarySearch(int[] arr, int left, int right, int x)
@@ -106,27 +104,33 @@ namespace DoAn_CTDLGT_1988216
 
         static public Queue getOdd(int[] arr)
         {
+            // Khởi tạo hàng đợi lẻ
             Queue oddQueue = new Queue();
             foreach(int x in arr)
             {
                 if(x % 2 != 0)
                 {
+                    // Thêm vào hàng đợi lẻ bằng method push trong class Queue
                     oddQueue.push(x);
                 }
             }
+            // Trả về một hàng đợi chứa các phần tử nguyên lẻ
             return oddQueue;
         }
 
         static public Queue getEven(int[] arr)
         {
+            // Khởi tạo hàng đợi chẵn
             Queue evenQueue = new Queue();
             foreach (int x in arr)
             {
                 if (x % 2 == 0)
                 {
+                    // Thêm vào hàng đợi chẵn bằng method push trong class Queue
                     evenQueue.push(x);
                 }
             }
+            // Trả về một hàng đợi chứa các phần tử nguyên chẵn
             return evenQueue;
         }
 
@@ -134,27 +138,19 @@ namespace DoAn_CTDLGT_1988216
         {
             string hexString = "";
 
-            // Số lượng phần tử hiện có trong hàng đợi
-            int counter = myQueue.Count(); 
-
-            for (int i = 0; i < counter; i++)
+            // Khi hàng đợi không rỗng thì thực hiện việc thêm vào hexString
+            while(!myQueue.isQueueEmpty())
             {
-                hexString += myQueue.getFromQueue(i).ToString("X2") + " ";
+                // Chuyển từ Dec sang Hex với 2 digit
+                hexString += myQueue.pop().ToString("X2") + " ";
             }
 
+            // Remove space cuối chuỗi
             hexString = hexString.Remove(hexString.Length - 1);
 
             StreamWriter file = new StreamWriter(filePath);
             file.Write(hexString);
             file.Close();
-        }
-
-        static void printIntArray(int[] arr)
-        {
-            foreach(int x in arr)
-            {
-                Console.Write(x + " ");
-            }
         }
 
         static void Main(string[] args)
