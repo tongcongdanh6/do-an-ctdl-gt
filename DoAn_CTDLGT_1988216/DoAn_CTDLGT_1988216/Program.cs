@@ -1,9 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
 
 namespace DoAn_CTDLGT_1988216
@@ -177,45 +174,42 @@ namespace DoAn_CTDLGT_1988216
 
             // Setup cho Binary Search
             // Validate truong hop nhap khong phai la so bang TryParse
-            if(args.Length == 0)
+
+            // Neu nhap truc tiep tu CMD thi thay vi doc tu Console.ReadLine
+            // thi bay gio lay truc tiep args[0]
+            int n;
+            bool validInt = true;
+            if(args.Length > 0)
             {
-                if (int.TryParse(Console.ReadLine(), out int n))
+                validInt = int.TryParse(args[0], out n);
+                if(args.Length > 1)
                 {
-                    int foundIdx = binarySearch(sortedArr, 0, sortedArr.Length - 1, n);
-                    if (foundIdx == -1)
-                    {
-                        Console.WriteLine("Khong tim thay {0}", n);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Vi tri cua {0} la {1}", n, foundIdx);
-                    }
+                    Console.WriteLine("Ban da nhap nhieu hon 1 argument. Chuong trinh chi lay tham so SO NGUYEN " +
+                        "dau tien la {0} de thuc hien viec tim kiem", args[0]);
+                }
+            }
+            // Neu doc tu Debug Program hoac chay truc tiep EXE thi doc bang ReadLine()
+            else
+            {
+                validInt = int.TryParse(Console.ReadLine(), out n);
+            }
+
+            if(validInt)
+            {
+                int foundIdx = binarySearch(sortedArr, 0, sortedArr.Length - 1, n);
+                if (foundIdx == -1)
+                {
+                    Console.WriteLine("Khong tim thay {0}", n);
                 }
                 else
                 {
-                    Console.WriteLine("So da nhap khong hop le !!!");
+                    Console.WriteLine("Vi tri cua {0} la {1}", n, foundIdx);
                 }
             }
             else
             {
-                if (int.TryParse(args[0], out int n))
-                {
-                    int foundIdx = binarySearch(sortedArr, 0, sortedArr.Length - 1, n);
-                    if (foundIdx == -1)
-                    {
-                        Console.WriteLine("Khong tim thay {0}", n);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Vi tri cua {0} la {1}", n, foundIdx);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("So da nhap khong hop le !!!");
-                }
+                Console.WriteLine("So da nhap khong hop le !!!");
             }
-
 
 
             // Setup cho Queue
@@ -230,6 +224,5 @@ namespace DoAn_CTDLGT_1988216
 
             Console.ReadKey(true);
         }
-
     }
 }
