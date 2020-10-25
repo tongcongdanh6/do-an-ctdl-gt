@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace DoAn_CTDLGT_1988216
+namespace _1988216
 {
     class Program
     {
@@ -13,10 +13,10 @@ namespace DoAn_CTDLGT_1988216
             string ln;
             List<int> intList = new List<int>();
 
-            while((ln = file.ReadLine()) != null)
+            while ((ln = file.ReadLine()) != null)
             {
                 // Tách chuỗi để đưa vào array bởi space, hoặc tab, và thêm option remove các duplicate space ...
-                string[] strArr = ln.Split((char[])null, StringSplitOptions.RemoveEmptyEntries); 
+                string[] strArr = ln.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
                 int numOfElement = strArr.Length;
 
                 for (int i = 0; i < numOfElement; i++)
@@ -25,7 +25,7 @@ namespace DoAn_CTDLGT_1988216
                     // Có 2 trường hợp không thành công là
                     // 1. Kí tự đặc biệt
                     // 2. Cũng là kí tự nhưng nằm ngoài range [A-F] của Hex
-                    if(int.TryParse(strArr[i], NumberStyles.HexNumber, new CultureInfo("en-US") , out int res))
+                    if (int.TryParse(strArr[i], NumberStyles.HexNumber, new CultureInfo("en-US"), out int res))
                     {
                         // Nếu Parse thành công thì add vào List
                         intList.Add(Convert.ToInt32(strArr[i], 16));
@@ -35,18 +35,18 @@ namespace DoAn_CTDLGT_1988216
             file.Close();
 
             // Chuyển đổi từ List qua Array
-            return intList.ToArray(); 
+            return intList.ToArray();
         }
 
         static public int[] selectionSort(int[] intArr)
         {
-            for(int i = 0; i < intArr.Length; i++)
+            for (int i = 0; i < intArr.Length; i++)
             {
                 int minIdx = i;
                 // Tìm min trong array
                 for (int j = i + 1; j < intArr.Length; j++)
                 {
-                    if(intArr[j] < intArr[minIdx])
+                    if (intArr[j] < intArr[minIdx])
                     {
                         minIdx = j;
                     }
@@ -81,7 +81,7 @@ namespace DoAn_CTDLGT_1988216
         static public int binarySearch(int[] arr, int left, int right, int x)
         {
             // Nếu chưa hết mảng thì thực hiện Binary Search
-            if(left <= right)
+            if (left <= right)
             {
                 int mid = (left + right) / 2;
 
@@ -106,9 +106,9 @@ namespace DoAn_CTDLGT_1988216
         {
             // Khởi tạo hàng đợi lẻ
             Queue oddQueue = new Queue();
-            foreach(int x in arr)
+            foreach (int x in arr)
             {
-                if(x % 2 != 0)
+                if (x % 2 != 0)
                 {
                     // Thêm vào hàng đợi lẻ bằng method push trong class Queue
                     oddQueue.push(x);
@@ -139,7 +139,7 @@ namespace DoAn_CTDLGT_1988216
             string hexString = "";
 
             // Khi hàng đợi không rỗng thì thực hiện việc thêm vào hexString
-            while(!myQueue.isQueueEmpty())
+            while (!myQueue.isQueueEmpty())
             {
                 // Chuyển từ Dec sang Hex với 2 digit
                 hexString += myQueue.pop().ToString("X2") + " ";
@@ -161,62 +161,68 @@ namespace DoAn_CTDLGT_1988216
             const string EVEN_QUEUE_FILE_PATH = "../../even_queue.txt";
             const string ODD_QUEUE_FILE_PATH = "../../odd_queue.txt";
 
-            // Setup đọc file từ hex_numbers.txt
-            int[] myArr = readHexNumbers(INPUT_FILE_PATH);
-
-            // Setup cho Selection Sort
-            int[] sortedArr = selectionSort(myArr);
-            writeHexNumbers(sortedArr, SORTED_FILE_PATH);
-
-            // Setup cho Binary Search
-            // Validate trường hợp nhập không phải là số bằng TryParse
-
-            // Nếu nhập trực tiếp từ CMD thì thay vì đọc từ Console.ReadLine, ta đọc từ args[0]
-            int n;
-            bool validInt = true;
-            if(args.Length > 0)
+            try
             {
-                validInt = int.TryParse(args[0], out n);
-                if(args.Length > 1)
+                // Setup đọc file từ hex_numbers.txt
+                int[] myArr = readHexNumbers(INPUT_FILE_PATH);
+
+                // Setup cho Selection Sort
+                int[] sortedArr = selectionSort(myArr);
+                writeHexNumbers(sortedArr, SORTED_FILE_PATH);
+
+                // Setup cho Binary Search
+                // Validate trường hợp nhập không phải là số bằng TryParse
+
+                // Nếu nhập trực tiếp từ CMD thì thay vì đọc từ Console.ReadLine, ta đọc từ args[0]
+                int n;
+                bool validInt = true;
+                if (args.Length > 0)
                 {
-                    Console.WriteLine("Ban da nhap nhieu hon 1 argument. Chuong trinh chi lay tham so SO NGUYEN " +
-                        "dau tien la {0} de thuc hien viec tim kiem", args[0]);
+                    validInt = int.TryParse(args[0], out n);
+                    if (args.Length > 1)
+                    {
+                        Console.WriteLine("Ban da nhap nhieu hon 1 argument. Chuong trinh chi lay tham so SO NGUYEN " +
+                            "dau tien la {0} de thuc hien viec tim kiem", args[0]);
+                    }
                 }
-            }
-            // Nếu đọc từ Debug hoặc chạy trực tiếp từ file Binary EXE thì đọc bằng Console.ReadLine()
-            else
-            {
-                validInt = int.TryParse(Console.ReadLine(), out n);
-            }
-
-            if(validInt)
-            {
-                int foundIdx = binarySearch(sortedArr, 0, sortedArr.Length - 1, n);
-                if (foundIdx == -1)
+                // Nếu đọc từ Debug hoặc chạy trực tiếp từ file Binary EXE thì đọc bằng Console.ReadLine()
+                else
                 {
-                    Console.WriteLine("Khong tim thay {0}", n);
+                    validInt = int.TryParse(Console.ReadLine(), out n);
+                }
+
+                if (validInt)
+                {
+                    int foundIdx = binarySearch(sortedArr, 0, sortedArr.Length - 1, n);
+                    if (foundIdx == -1)
+                    {
+                        Console.WriteLine("Khong tim thay {0}", n);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vi tri cua {0} la {1}", n, foundIdx);
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Vi tri cua {0} la {1}", n, foundIdx);
+                    Console.WriteLine("So da nhap khong hop le !!!");
                 }
-            }
-            else
+
+
+                // Setup cho Queue
+                Queue evenQueue = new Queue();
+                Queue oddQueue = new Queue();
+
+                evenQueue = getEven(sortedArr);
+                oddQueue = getOdd(sortedArr);
+
+                writeToFile(evenQueue, EVEN_QUEUE_FILE_PATH);
+                writeToFile(oddQueue, ODD_QUEUE_FILE_PATH);
+            } catch(Exception e)
             {
-                Console.WriteLine("So da nhap khong hop le !!!");
+                Console.WriteLine("Co loi xay ra: ");
+                Console.Write(e.Message);
             }
-
-
-            // Setup cho Queue
-            Queue evenQueue = new Queue();
-            Queue oddQueue = new Queue();
-
-            evenQueue = getEven(sortedArr);
-            oddQueue = getOdd(sortedArr);
-
-            writeToFile(evenQueue, EVEN_QUEUE_FILE_PATH);
-            writeToFile(oddQueue, ODD_QUEUE_FILE_PATH);
-
             Console.ReadKey(true);
         }
     }
